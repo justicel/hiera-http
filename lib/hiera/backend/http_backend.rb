@@ -117,7 +117,7 @@ class Hiera
 
       def yaml_handler(answer)
         require 'yaml'
-        YAML.parse(answer)[key]
+        YAML.parse(answer)#[key]
       end
 
     end
