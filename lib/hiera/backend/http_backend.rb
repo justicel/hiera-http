@@ -66,7 +66,8 @@ class Hiera
             answer << parsed_result
           when :hash
             answer ||= {}
-            answer = parsed_result.merge answer
+            answer = Hash[parsed_result.collect { |hash| [hash['id'], hash] }]
+#            answer = parsed_result.merge answer
           else
             answer = parsed_result
             break
@@ -115,7 +116,7 @@ class Hiera
         Hiera.debug("The key is #{key} and answer: #{answer}")
         jsonin = JSON.parse(answer)
         if jsonin.count > 1
-          Hash[jsonin.collect { |hash| [hash['id'], hash] }]
+	  jsonin
         else
           Hash[*jsonin][key]
         end
