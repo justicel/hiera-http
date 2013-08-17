@@ -112,7 +112,13 @@ class Hiera
       def json_handler(key,answer)
         require 'rubygems'
         require 'json'
-        JSON.parse(answer)[key]
+        Hiera.debug("The key is #{key} and answer: #{answer}")
+        jsonin = JSON.parse(answer)
+        if jsonin.count > 1
+          Hash[jsonin.collect { |hash| [hash['id'], hash] }]
+        else
+          Hash[*jsonin][key]
+        end
       end
 
       def yaml_handler(answer)
