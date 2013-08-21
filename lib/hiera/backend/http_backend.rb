@@ -38,6 +38,7 @@ class Hiera
       def lookup(key, scope, order_override, resolution_type)
 
         answer = nil
+        cleanfields = @config[:cleanfields]
 
         paths = @config[:paths].map { |p| Backend.parse_string(p, scope, { 'key' => key }) }
         paths.insert(0, order_override) if order_override
@@ -71,10 +72,10 @@ class Hiera
           case resolution_type
           when :array
             answer ||= []
-            answer << self.cleanup_fields(parsed_result, @config[:cleanfields])
+            answer << self.cleanup_fields(parsed_result, cleanfields)
           when :hash
             answer ||= {}
-            answer = Hash[parsed_result.collect { |hash| [hash['id'], self.cleanup_fields(hash, @config[:cleanfields]] }]
+            answer = Hash[parsed_result.collect { |hash| [hash['id'], self.cleanup_fields(hash, cleanfields] }]
           else
             answer = parsed_result
             break
