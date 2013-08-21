@@ -60,6 +60,14 @@ class Hiera
 
           parsed_result = Backend.parse_answer(result, scope)
 
+	  #Remove fields if they exist
+	  default_fields = ['id','_attributes','_source','date_created','date_modified']
+	  default_fields.each do |field|
+	    if parsed_result[field]
+	      parse_result.delete(field)
+	    end
+	  end
+
           case resolution_type
           when :array
             answer ||= []
