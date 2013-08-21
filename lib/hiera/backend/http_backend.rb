@@ -27,6 +27,14 @@ class Hiera
         end
       end
 
+      def cleanup_fields(result_in, fields)
+         #Remove fields if they exist
+         require 'set'
+         default_fields = fields.to_set
+     
+         [result_in].collect! { |key| key.delete_if { |k, v| default_fields.include? k } }
+      end
+
       def lookup(key, scope, order_override, resolution_type)
 
         answer = nil
@@ -60,22 +68,13 @@ class Hiera
 
           parsed_result = Backend.parse_answer(result, scope)
 
-	  #Remove fields if they exist
-	  default_fields = ['id','_attributes','_source','date_created','date_modified']
-	  default_fields.each do |field|
-	    if parsed_result[field]
-	      parse_result.delete(field)
-	    end
-	  end
-
           case resolution_type
           when :array
             answer ||= []
-            answer << parsed_result
+            answer << self.cleanup_fields(parsed_result, @config[:cleanfields])
           when :hash
             answer ||= {}
-            answer = Hash[parsed_result.collect { |hash| [hash['id'], hash] }]
-#            answer = parsed_result.merge answer
+            answer = Hash[parsed_result.collect { |hash| [hash['id'], self.cleanup_fields(hash, @config[:cleanfields]] }]
           else
             answer = parsed_result
             break
