@@ -31,8 +31,12 @@ class Hiera
          #Remove fields if they exist
          require 'set'
          default_fields = fields.to_set
-     
-         [result_in].collect! { |key| key.delete_if { |k, v| default_fields.include? k } }
+
+         if result_in.is_a?Hash
+           result_in=[result_in]
+         end
+         result_in.collect! { |key| key.delete_if { |k, v| default_fields.include? k } }
+ 
       end
 
       def lookup(key, scope, order_override, resolution_type)
