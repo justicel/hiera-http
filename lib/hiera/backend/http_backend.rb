@@ -33,9 +33,16 @@ class Hiera
          default_fields = fields.to_set
 
          if result_in.is_a?Hash
-           result_in=[result_in]
+           result_in.delete_if { |k, v| default_fields.include? k }
+         else
+           result_in.collect { |key|
+             key.delete_if { |k, v|
+               default_fields.include? k
+             }
+           }
          end
-         result_in.collect! { |key| key.delete_if { |k, v| default_fields.include? k } }
+
+         return result_in
  
       end
 
