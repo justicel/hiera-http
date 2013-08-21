@@ -75,7 +75,7 @@ class Hiera
             answer << self.cleanup_fields(parsed_result, cleanfields)
           when :hash
             answer ||= {}
-            answer = Hash[parsed_result.collect { |hash| [hash['id'], self.cleanup_fields(hash, cleanfields) }]
+            answer = Hash[parsed_result.collect { |hash| [hash['id'], self.cleanup_fields(hash, cleanfields)] }]
           else
             answer = parsed_result
             break
